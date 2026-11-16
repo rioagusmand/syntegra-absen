@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#18181B" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Syntegra Services - Absensi Digital</title>
+  <link rel="manifest" href="manifest.json" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #09090B; color: #FAFAFA; }
+    .gold-gradient { background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%); }
+    .card-dark { background: #18181B; border: 1px solid #27272A; }
+    video { transform: scaleX(-1); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[90%] px-4 py-3 rounded-xl shadow-2xl text-sm font-semibold flex items-center gap-2 transition-all"></div>
+
+  <!-- VIEW 1: SETUP SUPERADMIN PERTAMA KALI -->
+  <div id="view-setup" class="hidden flex-1 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl bg-white text-zinc-900">
+      <div class="gold-gradient p-6 text-center text-zinc-950 border-b-4 border-zinc-950">
+        <div class="w-16 h-16 mx-auto mb-3">
+          <svg viewBox="0 0 100 110" class="w-full h-full drop-shadow">
+            <path d="M50 4 L92 18 L92 52 C92 78 72 96 50 106 C28 96 8 78 8 52 L8 18 Z" fill="#18181B"/>
+            <path d="M50 10 L86 22 L86 51 C86 73 68 89 50 98 C32 89 14 73 14 51 L14 22 Z" fill="#EAB308"/>
+            <path d="M44 26 C37 26 32 31 31 37 L25 40 L28 45 L34 44 C35 49 39 52 43 53 C38 61 36 72 41 84 C52 79 68 65 76 42 L58 55 L74 33 L54 47 L67 24 L48 40 C48 32 47 26 44 26 Z" fill="#18181B"/>
+          </svg>
+        </div>
+        <span class="inline-block bg-zinc-950 text-amber-400 text-[10px] font-extrabold tracking-widest px-3 py-1 rounded-full uppercase mb-2">Inisialisasi Sistem APK</span>
+        <h1 class="text-xl font-extrabold tracking-tight uppercase">Aktivasi Superadmin Utama</h1>
+        <p class="text-xs font-medium text-zinc-900/80 mt-1">Syntegra Services Workforce Management</p>
+      </div>
+      <form id="form-setup" class="p-6 space-y-4">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900">
+          Daftarkan akun <b>Superadmin HR</b> pertama untuk mulai mengelola karyawan *outsourcing* dan titik koordinat klien.
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Nama Lengkap Superadmin *</label>
+          <input type="text" id="setup-name" required placeholder="Contoh: Rio Agusmand Lubis" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:border-amber-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Email / ID Login Superadmin *</label>
+          <input type="text" id="setup-email" required placeholder="admin@syntegra.co.id" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:border-amber-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Password (Min. 4 Karakter) *</label>
+          <input type="password" id="setup-pass" required minlength="4" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:border-amber-500" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-zinc-950 text-amber-400 font-bold text-sm hover:bg-zinc-900 active:scale-[0.99] transition">
+          Aktifkan & Masuk sebagai Superadmin
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- VIEW 2: LOGIN PORTAL -->
+  <div id="view-login" class="hidden flex-1 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-3xl overflow-hidden shadow-2xl bg-white text-zinc-900">
+      <div class="bg-zinc-950 p-6 text-center border-b-4 border-amber-400">
+        <div class="w-16 h-16 mx-auto mb-2">
+          <svg viewBox="0 0 100 110" class="w-full h-full">
+            <path d="M50 4 L92 18 L92 52 C92 78 72 96 50 106 C28 96 8 78 8 52 L8 18 Z" fill="#27272A"/>
+            <path d="M50 10 L86 22 L86 51 C86 73 68 89 50 98 C32 89 14 73 14 51 L14 22 Z" fill="#EAB308"/>
+            <path d="M44 26 C37 26 32 31 31 37 L25 40 L28 45 L34 44 C35 49 39 52 43 53 C38 61 36 72 41 84 C52 79 68 65 76 42 L58 55 L74 33 L54 47 L67 24 L48 40 C48 32 47 26 44 26 Z" fill="#18181B"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-extrabold tracking-wider text-white uppercase">SYNTEGRA <span class="text-amber-400">SERVICES</span></h1>
+        <p class="text-xs text-zinc-400 mt-1">Portal Absensi Digital & Manajemen Outsourcing</p>
+      </div>
+      <form id="form-login" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">NIP Karyawan / Email Login</label>
+          <input type="text" id="login-id" required placeholder="Masukkan NIP atau Email" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:border-amber-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-zinc-600 mb-1">Password</label>
+          <input type="password" id="login-pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:outline-none focus:border-amber-500" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl gold-gradient text-zinc-950 font-extrabold text-sm shadow-lg active:scale-[0.99] transition">
+          MASUK KE SISTEM
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- VIEW 3: DASHBOARD KARYAWAN -->
+  <div id="view-employee" class="hidden flex-1 flex flex-col max-w-lg mx-auto w-full pb-10">
+    <header class="bg-zinc-950 border-b border-zinc-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center font-black text-amber-400 text-sm">SS</div>
+        <div>
+          <div class="text-xs font-extrabold text-amber-400 tracking-wider uppercase">SYNTEGRA SERVICES</div>
+          <div id="emp-header-name" class="text-sm font-bold text-white leading-tight">-</div>
+        </div>
+      </div>
+      <button onclick="logout()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-xs font-semibold text-zinc-300 hover:text-white">Keluar</button>
+    </header>
+
+    <main class="p-4 space-y-4">
+      <!-- Info Penempatan & Waktu -->
+      <div class="card-dark rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] uppercase tracking-wider text-zinc-400">Penempatan Klien</span>
+            <h2 id="emp-site-name" class="text-base font-bold text-amber-400">-</h2>
+          </div>
+          <div class="text-right">
+            <div id="live-clock" class="text-lg font-extrabold text-white font-mono">00:00:00</div>
+            <div id="live-date" class="text-[11px] text-zinc-400">-</div>
+          </div>
+        </div>
+        <div class="pt-2 border-t border-zinc-800 flex items-center justify-between text-xs">
+          <span id="gps-status-badge" class="px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-300 font-semibold">Mencari sinyal GPS...</span>
+          <span id="gps-distance-text" class="font-mono text-zinc-400">Jarak: - m</span>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="refreshGPS()" class="flex-1 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-[11px] font-semibold text-zinc-200">Perbarui GPS</button>
+          <button type="button" onclick="simulateInsideRadius()" class="flex-1 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-[11px] font-semibold text-amber-300">Simulasi di Lokasi</button>
+        </div>
+      </div>
+
+      <!-- Kamera Selfie Live -->
+      <div class="card-dark rounded-2xl overflow-hidden">
+        <div class="px-4 py-2.5 border-b border-zinc-800 flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Kamera Verifikasi Wajah</span>
+          <span id="cam-status" class="text-[11px] text-emerald-400 font-semibold">Live</span>
+        </div>
+        <div class="relative aspect-[4/3] bg-zinc-950 flex items-center justify-center overflow-hidden">
+          <video id="camera-video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+          <canvas id="photo-canvas" class="hidden"></canvas>
+          <div id="camera-fallback" class="hidden text-center p-6">
+            <p class="text-xs text-zinc-400 mb-2">Kamera tidak terdeteksi / izin ditolak.</p>
+            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold">Mode Foto Bukti Otomatis Aktif</span>
+          </div>
+          <div class="absolute bottom-2 left-2 right-2 bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-lg text-[10px] text-amber-300 font-mono flex justify-between">
+            <span>SYNTEGRA VERIFIED</span>
+            <span id="overlay-coords">Lat: -, Lng: -</span>
+          </div>
+        </div>
+        <div class="p-4 grid grid-cols-2 gap-3">
+          <button onclick="submitAttendance('MASUK')" class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-lg active:scale-95 transition">
+            ABSEN MASUK
+          </button>
+          <button onclick="submitAttendance('PULANG')" class="py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm shadow-lg active:scale-95 transition">
+            ABSEN PULANG
+          </button>
+        </div>
+      </div>
+
+      <!-- Riwayat Pribadi -->
+      <div class="card-dark rounded-2xl p-4">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-zinc-400 mb-3">Riwayat Absensi Saya</h3>
+        <div id="emp-history-list" class="space-y-2.5 text-xs"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- VIEW 4: DASHBOARD SUPERADMIN HR -->
+  <div id="view-admin" class="hidden flex-1 flex flex-col max-w-5xl mx-auto w-full pb-12">
+    <header class="bg-zinc-950 border-b border-zinc-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+      <div>
+        <div class="text-xs font-extrabold text-amber-400 tracking-wider uppercase">SYNTEGRA SERVICES • SUPERADMIN HR</div>
+        <div id="admin-header-name" class="text-sm font-bold text-white">-</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="exportCSV()" class="px-3 py-1.5 rounded-lg bg-amber-400 text-zinc-950 text-xs font-extrabold">Export CSV</button>
+        <button onclick="logout()" class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-xs font-semibold text-zinc-300">Keluar</button>
+      </div>
+    </header>
+
+    <!-- Tab Navigasi Admin -->
+    <div class="grid grid-cols-3 border-b border-zinc-800 bg-zinc-900/60 text-xs font-bold">
+      <button onclick="switchAdminTab('logs')" id="tab-btn-logs" class="py-3 border-b-2 border-amber-400 text-amber-400">Monitoring Absensi</button>
+      <button onclick="switchAdminTab('users')" id="tab-btn-users" class="py-3 border-b-2 border-transparent text-zinc-400">Data Karyawan</button>
+      <button onclick="switchAdminTab('sites')" id="tab-btn-sites" class="py-3 border-b-2 border-transparent text-zinc-400">Lokasi Klien</button>
+    </div>
+
+    <!-- TAB 1: MONITORING LOGS -->
+    <div id="admin-tab-logs" class="p-4 space-y-4">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="card-dark rounded-xl p-3">
+          <div class="text-[11px] text-zinc-400">Total Karyawan</div>
+          <div id="stat-total-emp" class="text-xl font-extrabold text-white mt-0.5">0</div>
+        </div>
+        <div class="card-dark rounded-xl p-3">
+          <div class="text-[11px] text-zinc-400">Lokasi Klien</div>
+          <div id="stat-total-sites" class="text-xl font-extrabold text-amber-400 mt-0.5">0</div>
+        </div>
+        <div class="card-dark rounded-xl p-3">
+          <div class="text-[11px] text-zinc-400">Log Kehadiran</div>
+          <div id="stat-total-logs" class="text-xl font-extrabold text-emerald-400 mt-0.5">0</div>
+        </div>
+      </div>
+
+      <div id="admin-logs-list" class="space-y-3"></div>
+    </div>
+
+    <!-- TAB 2: MANAJEMEN KARYAWAN -->
+    <div id="admin-tab-users" class="hidden p-4 space-y-4">
+      <form id="form-add-user" class="card-dark rounded-2xl p-4 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">+ Tambah Akun Karyawan Outsourcing</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input type="text" id="new-emp-nip" required placeholder="NIP / ID Login (Misal: SYN001)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white" />
+          <input type="text" id="new-emp-name" required placeholder="Nama Lengkap Karyawan" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white" />
+          <input type="text" id="new-emp-role" required placeholder="Jabatan (Misal: Security / Admin)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white" />
+          <select id="new-emp-site" required class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white"></select>
+          <input type="password" id="new-emp-pass" required placeholder="Password Login Karyawan" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white sm:col-span-2" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl gold-gradient text-zinc-950 font-extrabold text-xs">Simpan Akun Karyawan</button>
+      </form>
+      <div id="admin-users-list" class="space-y-2.5"></div>
+    </div>
+
+    <!-- TAB 3: MANAJEMEN LOKASI KLIEN -->
+    <div id="admin-tab-sites" class="hidden p-4 space-y-4">
+      <form id="form-add-site" class="card-dark rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">+ Tambah Titik Penempatan Klien</h3>
+          <button type="button" onclick="fillCurrentCoords()" class="px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-300 text-[11px] font-bold">Ambil GPS Saya</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input type="text" id="new-site-name" required placeholder="Nama Gedung / Klien (Misal: Kantor Cabang Medan)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white sm:col-span-2" />
+          <input type="number" step="any" id="new-site-lat" required placeholder="Latitude (Contoh: 3.5952)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white" />
+          <input type="number" step="any" id="new-site-lng" required placeholder="Longitude (Contoh: 98.6722)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white" />
+          <input type="number" id="new-site-radius" required value="100" placeholder="Radius Maksimal (meter)" class="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-700 text-xs text-white sm:col-span-2" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl gold-gradient text-zinc-950 font-extrabold text-xs">Simpan Lokasi Klien</button>
+      </form>
+      <div id="admin-sites-list" class="space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- MODAL PREVIEW FOTO -->
+  <div id="photo-modal" onclick="this.classList.add('hidden')" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+    <img id="modal-img" src="" class="max-w-full max-h-[85vh] rounded-2xl border-2 border-amber-400 shadow-2xl" />
+  </div>
+
+  <script>
+    // STORAGE ENGINE (100% OFFLINE-FIRST & INSTANT LOAD)
+    const DB_KEYS = {
+      USERS: 'syntegra_users_v1',
+      SITES: 'syntegra_sites_v1',
+      LOGS: 'syntegra_logs_v1',
+      SESSION: 'syntegra_session_v1'
+    };
+
+    const getDB = (key, fallback = []) => {
+      try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
+    };
+    const setDB = (key, val) => localStorage.setItem(key, JSON.stringify(val));
+
+    // Inisialisasi default lokasi pertama kali jika kosong
+    if (getDB(DB_KEYS.SITES).length === 0) {
+      setDB(DB_KEYS.SITES, [{
+        id: 'SITE-01',
+        name: 'Kantor Pusat Syntegra Services',
+        lat: 3.595196,
+        lng: 98.672226,
+        radius: 150
+      }]);
+    }
+
+    let currentUser = null;
+    let currentCoords = null;
+    let cameraStream = null;
+    let cameraActive = false;
+
+    function showToast(msg, type = 'success') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = `fixed bottom-5 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[90%] px-4 py-3 rounded-xl shadow-2xl text-xs font-bold flex items-center justify-center text-center ${
+        type === 'error' ? 'bg-rose-600 text-white' : 'bg-amber-400 text-zinc-950'
+      }`;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+
+    function showView(viewId) {
+      ['view-setup', 'view-login', 'view-employee', 'view-admin'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(viewId).classList.remove('hidden');
+    }
+
+    // INIT APP INSTANTLY
+    function initApp() {
+      const users = getDB(DB_KEYS.USERS);
+      const hasAdmin = users.some(u => u.role === 'superadmin');
+      if (!hasAdmin) {
+        showView('view-setup');
+        return;
+      }
+      const session = getDB(DB_KEYS.SESSION, null);
+      if (session) {
+        const validUser = users.find(u => u.id === session.id);
+        if (validUser) {
+          loginSuccess(validUser);
+          return;
+        }
+      }
+      showView('view-login');
+    }
+
+    // SETUP SUPERADMIN
+    document.getElementById('form-setup').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('setup-name').value.trim();
+      const email = document.getElementById('setup-email').value.trim().toLowerCase();
+      const pass = document.getElementById('setup-pass').value;
+      const adminUser = {
+        id: 'ADM-' + Date.now(),
+        nip: email,
+        name,
+        role: 'superadmin',
+        position: 'Superadmin HR',
+        password: pass
+      };
+      const users = getDB(DB_KEYS.USERS);
+      users.push(adminUser);
+      setDB(DB_KEYS.USERS, users);
+      showToast('Superadmin berhasil diaktifkan!');
+      loginSuccess(adminUser);
+    });
+
+    // LOGIN HANDLER
+    document.getElementById('form-login').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const loginId = document.getElementById('login-id').value.trim().toLowerCase();
+      const pass = document.getElementById('login-pass').value;
+      const users = getDB(DB_KEYS.USERS);
+      const found = users.find(u => u.nip.toLowerCase() === loginId && u.password === pass);
+      if (!found) {
+        showToast('NIP/Email atau Password salah!', 'error');
+        return;
+      }
+      loginSuccess(found);
+    });
+
+    function loginSuccess(user) {
+      currentUser = user;
+      setDB(DB_KEYS.SESSION, { id: user.id });
+      if (user.role === 'superadmin') {
+        document.getElementById('admin-header-name').textContent = user.name;
+        showView('view-admin');
+        renderAdminDashboard();
+      } else {
+        document.getElementById('emp-header-name').textContent = `${user.name} (${user.nip})`;
+        showView('view-employee');
+        initEmployeeMode();
+      }
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem(DB_KEYS.SESSION);
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      showView('view-login');
+    }
+
+    // HAVERSINE FORMULA
+    function calcDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3;
+      const p1 = lat1 * Math.PI / 180;
+      const p2 = lat2 * Math.PI / 180;
+      const dp = (lat2 - lat1) * Math.PI / 180;
+      const dl = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dp/2)**2 + Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+      return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+    }
+
+    // EMPLOYEE MODE
+    function initEmployeeMode() {
+      const sites = getDB(DB_KEYS.SITES);
+      const site = sites.find(s => s.id === currentUser.siteId) || sites[0];
+      document.getElementById('emp-site-name').textContent = site ? `${site.name} (Max ${site.radius}m)` : 'Belum diatur';
+      startCamera();
+      refreshGPS();
+      renderEmployeeHistory();
+    }
+
+    async function startCamera() {
+      const video = document.getElementById('camera-video');
+      const fallback = document.getElementById('camera-fallback');
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        video.srcObject = cameraStream;
+        cameraActive = true;
+        fallback.classList.add('hidden');
+      } catch (err) {
+        cameraActive = false;
+        video.classList.add('hidden');
+        fallback.classList.remove('hidden');
+        document.getElementById('cam-status').textContent = 'Simulasi';
+      }
+    }
+
+    function refreshGPS() {
+      const badge = document.getElementById('gps-status-badge');
+      badge.textContent = 'Mengambil koordinat...';
+      if (!navigator.geolocation) {
+        simulateInsideRadius();
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => updateCoords(pos.coords.latitude, pos.coords.longitude),
+        () => {
+          badge.textContent = 'GPS Terblokir (Gunakan Simulasi)';
+          badge.className = 'px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 font-semibold';
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    }
+
+    function simulateInsideRadius() {
+      const sites = getDB(DB_KEYS.SITES);
+      const site = sites.find(s => s.id === currentUser.siteId) || sites[0];
+      if (site) {
+        updateCoords(site.lat + 0.00005, site.lng + 0.00005);
+        showToast('Simulasi GPS dalam radius aktif');
+      }
+    }
+
+    function updateCoords(lat, lng) {
+      currentCoords = { lat, lng };
+      document.getElementById('overlay-coords').textContent = `Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}`;
+      const sites = getDB(DB_KEYS.SITES);
+      const site = sites.find(s => s.id === currentUser.siteId) || sites[0];
+      if (!site) return;
+      const dist = calcDistance(lat, lng, site.lat, site.lng);
+      document.getElementById('gps-distance-text').textContent = `Jarak: ${dist} m`;
+      const badge = document.getElementById('gps-status-badge');
+      if (dist <= site.radius) {
+        badge.textContent = 'Dalam Radius Kantor';
+        badge.className = 'px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold';
+      } else {
+        badge.textContent = 'Di Luar Radius Kantor';
+        badge.className = 'px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 font-semibold';
+      }
+    }
+
+    function captureWatermarkedPhoto(type, siteName) {
+      const canvas = document.getElementById('photo-canvas');
+      const video = document.getElementById('camera-video');
+      canvas.width = 480;
+      canvas.height = 360;
+      const ctx = canvas.getContext('2d');
+
+      if (cameraActive && video.readyState >= 2) {
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, -480, 0, 480, 360);
+        ctx.restore();
+      } else {
+        ctx.fillStyle = '#18181B';
+        ctx.fillRect(0, 0, 480, 360);
+        ctx.fillStyle = '#EAB308';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SYNTEGRA SERVICES', 240, 165);
+        ctx.fillStyle = '#A1A1AA';
+        ctx.font = '13px sans-serif';
+        ctx.fillText('VERIFIED ATTENDANCE SNAPSHOT', 240, 190);
+      }
+
+      // Watermark Bar
+      ctx.fillStyle = 'rgba(9, 9, 11, 0.82)';
+      ctx.fillRect(0, 275, 480, 85);
+      ctx.fillStyle = '#FACC15';
+      ctx.font = 'bold 12px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`SYNTEGRA SERVICES • ABSEN ${type}`, 12, 295);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '11px monospace';
+      ctx.fillText(`${currentUser.name} (${currentUser.nip})`, 12, 313);
+      ctx.fillText(`${siteName} | ${new Date().toLocaleString('id-ID')}`, 12, 330);
+      ctx.fillStyle = '#A1A1AA';
+      ctx.fillText(`GPS: ${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`, 12, 347);
+
+      return canvas.toDataURL('image/jpeg', 0.75);
+    }
+
+    function submitAttendance(type) {
+      if (!currentCoords) {
+        showToast('Tunggu sinyal GPS atau klik Simulasi di Lokasi!', 'error');
+        return;
+      }
+      const sites = getDB(DB_KEYS.SITES);
+      const site = sites.find(s => s.id === currentUser.siteId) || sites[0];
+      const dist = calcDistance(currentCoords.lat, currentCoords.lng, site.lat, site.lng);
+      if (dist > site.radius) {
+        showToast(`Gagal! Anda berada ${dist}m dari lokasi (Max ${site.radius}m).`, 'error');
+        return;
+      }
+
+      const photo = captureWatermarkedPhoto(type, site.name);
+      const logs = getDB(DB_KEYS.LOGS);
+      logs.unshift({
+        id: 'LOG-' + Date.now(),
+        userId: currentUser.id,
+        nip: currentUser.nip,
+        name: currentUser.name,
+        siteName: site.name,
+        type,
+        distance: dist,
+        lat: currentCoords.lat,
+        lng: currentCoords.lng,
+        timestamp: new Date().toISOString(),
+        photo
+      });
+      setDB(DB_KEYS.LOGS, logs);
+      showToast(`Absen ${type} berhasil dicatat!`);
+      renderEmployeeHistory();
+    }
+
+    function renderEmployeeHistory() {
+      const logs = getDB(DB_KEYS.LOGS).filter(l => l.userId === currentUser.id);
+      const el = document.getElementById('emp-history-list');
+      if (logs.length === 0) {
+        el.innerHTML = '<div class="text-zinc-500 text-center py-4">Belum ada riwayat absensi.</div>';
+        return;
+      }
+      el.innerHTML = logs.map(l => `
+        <div class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <img src="${l.photo}" onclick="previewPhoto('${l.photo}')" class="w-12 h-12 rounded-lg object-cover border border-amber-400/50 cursor-pointer" />
+            <div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold ${l.type === 'MASUK' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${l.type}</span>
+              <div class="font-bold text-white mt-1">${new Date(l.timestamp).toLocaleTimeString('id-ID')} • ${new Date(l.timestamp).toLocaleDateString('id-ID')}</div>
+              <div class="text-[11px] text-zinc-400">${l.siteName} (${l.distance}m)</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ADMIN DASHBOARD
+    function switchAdminTab(tab) {
+      ['logs', 'users', 'sites'].forEach(t => {
+        document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = 'py-3 border-b-2 border-transparent text-zinc-400';
+      });
+      document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tab}`).className = 'py-3 border-b-2 border-amber-400 text-amber-400';
+      renderAdminDashboard();
+    }
+
+    function renderAdminDashboard() {
+      const users = getDB(DB_KEYS.USERS).filter(u => u.role !== 'superadmin');
+      const sites = getDB(DB_KEYS.SITES);
+      const logs = getDB(DB_KEYS.LOGS);
+
+      document.getElementById('stat-total-emp').textContent = users.length;
+      document.getElementById('stat-total-sites').textContent = sites.length;
+      document.getElementById('stat-total-logs').textContent = logs.length;
+
+      // Render Site Dropdown
+      document.getElementById('new-emp-site').innerHTML = sites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+      // Render Logs
+      const logsEl = document.getElementById('admin-logs-list');
+      logsEl.innerHTML = logs.length === 0
+        ? '<div class="card-dark rounded-xl p-6 text-center text-xs text-zinc-500">Belum ada data absensi masuk.</div>'
+        : logs.map(l => `
+          <div class="card-dark rounded-xl p-3 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <img src="${l.photo}" onclick="previewPhoto('${l.photo}')" class="w-14 h-14 rounded-xl object-cover border border-amber-400 cursor-pointer" />
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-white">${l.name}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-extrabold ${l.type === 'MASUK' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${l.type}</span>
+                </div>
+                <div class="text-xs text-amber-400">${l.siteName} • Jarak ${l.distance}m</div>
+                <div class="text-[11px] text-zinc-400">${new Date(l.timestamp).toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+            <a href="https://maps.google.com/?q=${l.lat},${l.lng}" target="_blank" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 text-[11px] font-bold text-amber-300">Maps</a>
+          </div>
+        `).join('');
+
+      // Render Users
+      document.getElementById('admin-users-list').innerHTML = users.map(u => {
+        const site = sites.find(s => s.id === u.siteId);
+        return `
+          <div class="card-dark rounded-xl p-3 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-sm text-white">${u.name} <span class="text-xs text-amber-400">(${u.nip})</span></div>
+              <div class="text-xs text-zinc-400">${u.position} • Penempatan: ${site ? site.name : '-'}</div>
+            </div>
+            <button onclick="deleteUser('${u.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-400 text-xs font-bold">Hapus</button>
+          </div>
+        `;
+      }).join('');
+
+      // Render Sites
+      document.getElementById('admin-sites-list').innerHTML = sites.map(s => `
+        <div class="card-dark rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <div class="font-bold text-sm text-white">${s.name}</div>
+            <div class="text-xs text-zinc-400 font-mono">${s.lat}, ${s.lng} • Radius ${s.radius}m</div>
+          </div>
+          <button onclick="deleteSite('${s.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-400 text-xs font-bold">Hapus</button>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('form-add-user').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const users = getDB(DB_KEYS.USERS);
+      users.push({
+        id: 'EMP-' + Date.now(),
+        nip: document.getElementById('new-emp-nip').value.trim(),
+        name: document.getElementById('new-emp-name').value.trim(),
+        position: document.getElementById('new-emp-role').value.trim(),
+        siteId: document.getElementById('new-emp-site').value,
+        password: document.getElementById('new-emp-pass').value,
+        role: 'employee'
+      });
+      setDB(DB_KEYS.USERS, users);
+      e.target.reset();
+      showToast('Akun karyawan berhasil ditambahkan!');
+      renderAdminDashboard();
+    });
+
+    document.getElementById('form-add-site').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const sites = getDB(DB_KEYS.SITES);
+      sites.push({
+        id: 'SITE-' + Date.now(),
+        name: document.getElementById('new-site-name').value.trim(),
+        lat: parseFloat(document.getElementById('new-site-lat').value),
+        lng: parseFloat(document.getElementById('new-site-lng').value),
+        radius: parseInt(document.getElementById('new-site-radius').value, 10)
+      });
+      setDB(DB_KEYS.SITES, sites);
+      e.target.reset();
+      showToast('Titik lokasi klien ditambahkan!');
+      renderAdminDashboard();
+    });
+
+    function fillCurrentCoords() {
+      if (!navigator.geolocation) return showToast('Browser tidak mendukung GPS', 'error');
+      navigator.geolocation.getCurrentPosition(pos => {
+        document.getElementById('new-site-lat').value = pos.coords.latitude.toFixed(6);
+        document.getElementById('new-site-lng').value = pos.coords.longitude.toFixed(6);
+        showToast('Koordinat GPS saat ini diisi!');
+      });
+    }
+
+    function deleteUser(id) {
+      setDB(DB_KEYS.USERS, getDB(DB_KEYS.USERS).filter(u => u.id !== id));
+      renderAdminDashboard();
+    }
+
+    function deleteSite(id) {
+      setDB(DB_KEYS.SITES, getDB(DB_KEYS.SITES).filter(s => s.id !== id));
+      renderAdminDashboard();
+    }
+
+    function previewPhoto(src) {
+      document.getElementById('modal-img').src = src;
+      document.getElementById('photo-modal').classList.remove('hidden');
+    }
+
+    function exportCSV() {
+      const logs = getDB(DB_KEYS.LOGS);
+      if (logs.length === 0) return showToast('Belum ada data absensi untuk diexport', 'error');
+      const rows = [['NIP', 'Nama', 'Lokasi Klien', 'Tipe', 'Jarak (m)', 'Latitude', 'Longitude', 'Waktu']];
+      logs.forEach(l => rows.push([l.nip, l.name, l.siteName, l.type, l.distance, l.lat, l.lng, l.timestamp]));
+      const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Laporan_Absensi_Syntegra_Services_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    // LIVE CLOCK
+    setInterval(() => {
+      const now = new Date();
+      const clockEl = document.getElementById('live-clock');
+      const dateEl = document.getElementById('live-date');
+      if (clockEl) clockEl.textContent = now.toLocaleTimeString('id-ID');
+      if (dateEl) dateEl.textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+    }, 1000);
+
+    initApp();
+  </script>
+</body>
+</html>
